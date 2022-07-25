@@ -92,4 +92,38 @@ module.exports = {
       return res.json({ status: "Error", message: ex.message });
     }
   },
+
+  getCart: async (req, res) => {
+    try {
+      let cart = await cartRepository.cart();
+      if (!cart) {
+        return res.status(400).json({
+          type: "Invalid",
+          msg: "Cart Not Found",
+        });
+      }
+      res.status(200).json({
+        status: "Success",
+        data: cart,
+      });
+    } catch (ex) {
+      return res.json({ status: "Error", message: ex.message });
+    }
+  },
+
+  deleteCart: async (req, res) => {
+    try {
+      let cart = await cartRepository.cart();
+      cart.items = [];
+      cart.subTotal = 0;
+      let data = await cart.save();
+      return res.status(200).json({
+        type: "Success",
+        message: "Cart has been emptied",
+        data: data,
+      });
+    } catch (ex) {
+      return res.json({ status: "Error", message: ex.message });
+    }
+  },
 };
